@@ -7,26 +7,16 @@ local execute = vim.api.nvim_command
 
 local lualine = require 'lualine'
 
-
--- Color table for highlights
-local colors = {
-  background = '#020221',
-  foreground = '#b4b4b9',
-  black = '#020221',
-  red = '#ff8e78',
-  green = '#b1bf75',
-  yellow = '#ffd392',
-  blue = '#99a4bc',
-  magenta = '#ffb07b',
-  cyan = '#8bccbf',
-  white = '#f8f8ff',
-}
+require('nvim-autopairs').setup()
+require'range-highlight'.setup{}
 
 require'lualine'.setup {
   options = {
-    theme = auto
+      theme = 'tokyonight'
+    }
 }
-}
+
+vim.opt_global.shortmess:remove("F"):append("c")
 
 local true_zen = require("true-zen")
 
@@ -52,9 +42,9 @@ true_zen.setup({
 		ataraxis = {
 			left_padding = 32,
 			right_padding = 32,
-			top_padding = 5,
-			bottom_padding = 0,
-			ideal_writing_area_width = {120},
+			top_padding = 0,
+			bottom_padding = 1,
+			ideal_writing_area_width = {100},
 			just_do_it_for_me = true,
 			keep_default_fold_fillchars = true,
 			custom_bg = {"none", ""},
@@ -95,5 +85,6 @@ require('keymappings')
 require('lsp_lua')
 require('configs.treesitter')
 require('plugins')
-
 vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile' -- Auto compile when there are changes in plugins.lua
+
+vim.cmd "autocmd BufEnter * lua require'completion'.on_attach()"

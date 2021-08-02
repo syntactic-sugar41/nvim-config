@@ -1,5 +1,11 @@
 return require('packer').startup(function()
   use {'wbthomason/packer.nvim' }
+  use({'scalameta/nvim-metals'})
+    use 'shaunsingh/moonlight.nvim'
+
+
+
+
 
 
   -- LSP and completion
@@ -9,7 +15,7 @@ return require('packer').startup(function()
   use { 'fenetikm/falcon' }
   use { 'folke/tokyonight.nvim' }
   use { 'nvim-lua/completion-nvim' }
-  use {'kyazdani42/nvim-web-devicons' } 
+  use {'kyazdani42/nvim-web-devicons' }
   use { 'kyazdani42/nvim-tree.lua' }
   use {
   'hoob3rt/lualine.nvim',
@@ -28,6 +34,9 @@ return require('packer').startup(function()
   use 'APZelos/blamer.nvim'
   use 'b3nj5m1n/kommentary'
   use 'psliwka/vim-smoothie'
-
-
+    use { 'windwp/nvim-autopairs' }
+    use { 'yamatsum/nvim-cursorline' }
+    use {'winston0410/range-highlight.nvim'}
+    use {'winston0410/cmd-parser.nvim'}
+    use { 'kabouzeid/nvim-lspinstall' }
   end)

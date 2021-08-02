@@ -7,14 +7,20 @@ cmd 'syntax enable'
 cmd 'filetype plugin indent on'
 
 cmd 'set background=dark'
-cmd 'set t_Co=256'
+cmd 'set termguicolors'
+vim.g.tokyonight_style = "night"
+vim.g.tokyonight_italic_functions = true
+vim.g.tokyonight_hide_inactive_statusline = true
+vim.g.tokyonight_lualine_bold = false
+vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
 
-cmd[[colorscheme falcon]]
+
+cmd[[colorscheme tokyonight]]
+
 cmd 'set updatetime=100'
 cmd 'set noswapfile'
-cmd 'set termguicolors'
+cmd[[set wildmenu]]
 utils.opt('b', 'expandtab', true)
-
 utils.opt('b', 'shiftwidth', indent)
 utils.opt('b', 'smartindent', true)
 utils.opt('b', 'tabstop', indent)
@@ -26,7 +32,7 @@ utils.opt('o', 'hlsearch', false)
 utils.opt('o', 'smartcase', true)
 utils.opt('o', 'splitbelow', true)
 utils.opt('o', 'splitright', true)
-utils.opt('o', 'wildmode', 'list:longest')
+utils.opt('o', 'wildmode', 'list:longest,full')
 utils.opt('w', 'number', true)
 utils.opt('w', 'relativenumber', true)
 utils.opt('o', 'clipboard','unnamed,unnamedplus')

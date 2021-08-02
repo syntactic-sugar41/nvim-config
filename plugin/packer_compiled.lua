@@ -77,6 +77,10 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/dara/.local/share/nvim/site/pack/packer/start/blamer.nvim"
   },
+  ["cmd-parser.nvim"] = {
+    loaded = true,
+    path = "/Users/dara/.local/share/nvim/site/pack/packer/start/cmd-parser.nvim"
+  },
   ["completion-nvim"] = {
     loaded = true,
     path = "/Users/dara/.local/share/nvim/site/pack/packer/start/completion-nvim"
@@ -105,9 +109,25 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/dara/.local/share/nvim/site/pack/packer/start/lualine.nvim"
   },
+  ["moonlight.nvim"] = {
+    loaded = true,
+    path = "/Users/dara/.local/share/nvim/site/pack/packer/start/moonlight.nvim"
+  },
+  ["nvim-autopairs"] = {
+    loaded = true,
+    path = "/Users/dara/.local/share/nvim/site/pack/packer/start/nvim-autopairs"
+  },
+  ["nvim-cursorline"] = {
+    loaded = true,
+    path = "/Users/dara/.local/share/nvim/site/pack/packer/start/nvim-cursorline"
+  },
   ["nvim-lspconfig"] = {
     loaded = true,
     path = "/Users/dara/.local/share/nvim/site/pack/packer/start/nvim-lspconfig"
+  },
+  ["nvim-metals"] = {
+    loaded = true,
+    path = "/Users/dara/.local/share/nvim/site/pack/packer/start/nvim-metals"
   },
   ["nvim-tree.lua"] = {
     loaded = true,
@@ -132,6 +152,10 @@ _G.packer_plugins = {
   ["popup.nvim"] = {
     loaded = true,
     path = "/Users/dara/.local/share/nvim/site/pack/packer/start/popup.nvim"
+  },
+  ["range-highlight.nvim"] = {
+    loaded = true,
+    path = "/Users/dara/.local/share/nvim/site/pack/packer/start/range-highlight.nvim"
   },
   ["telescope.nvim"] = {
     loaded = true,

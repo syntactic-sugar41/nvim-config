@@ -1,25 +1,63 @@
+USER = vim.fn.expand('$USER')
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-  --Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
-
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-
+--
+local function setup_servers()
+  require'lspinstall'.setup()
+  local servers = require'lspinstall'.installed_servers()
+  for _, server in pairs(servers) do
+    require'lspconfig'[server].setup{}
+  end
 end
+
+setup_servers()
+require'utils'.opt('o', 'completeopt', 'menuone,noinsert,noselect')
+
+
+-- Automatically reload after `:LspInstall <server>` so we don't have to restart neovim
+require'lspinstall'.post_install_hook = function ()
+  setup_servers() -- reload installed servers
+  vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
+end
+
+-- Need for symbol highlights to work correctly
+vim.cmd([[hi! link LspReferenceText CursorColumn]])
+vim.cmd([[hi! link LspReferenceRead CursorColumn]])
+vim.cmd([[hi! link LspReferenceWrite CursorColumn]])
+----------------------------------
+-- LSP Setup ---------------------
+----------------------------------
+metals_config = require("metals").bare_config
+metals_config.init_options.statusBarProvider = "on"
+
+-- Example of settings
+metals_config.settings = {
+  showImplicitArguments = true,
+}
+
+local function map(mode, lhs, rhs)
+  local opts = { noremap=true, silent=true }
+  local options = { noremap = true }
+  if opts then
+    options = vim.tbl_extend("force", options, opts)
+  end
+  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+end
+
+vim.cmd [[augroup lsp]]
+vim.cmd [[au!]]
+vim.cmd [[au FileType scala,sbt lua require("metals").initialize_or_attach(metals_config)]]
+vim.cmd [[augroup end]]
+
+
+map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
+map('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>')
+map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+map('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+map('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
+map('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
+map("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+
 
 local gopls = {
   -- capabilities = cap,
@@ -55,11 +93,60 @@ local gopls = {
       -- buildFlags = {"-tags", "functional"}
     }
   },
-    on_attach = require'completion'.on_attach,
-    capabilities = capabilities,
+    on_attach = on_attach,
+
 }
 
+local sumneko_root_path = ""
+local sumneko_binary = ""
 
+if vim.fn.has("mac") == 1 then
+    sumneko_root_path = "/Users/" .. USER .. "/.config/nvim/lsp-servers/lua-language-server"
+    sumneko_binary = "/Users/" .. USER .. "/.config/nvim/lsp-servers/lua-language-server/bin/macOS/lua-language-server"
+elseif vim.fn.has("unix") == 1 then
+    sumneko_root_path = "/home/" .. USER .. "/.config/nvim/lua-language-server"
+    sumneko_binary = "/home/" .. USER .. "/.config/nvim/lua-language-server/bin/Linux/lua-language-server"
+else
+    print("Unsupported system for sumneko")
+end
+
+require'lspconfig'.sumneko_lua.setup {
+    cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"},
+    settings = {
+        Lua = {
+            runtime = {
+                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                version = 'LuaJIT',
+                -- Setup your lua path
+                path = vim.split(package.path, ';')
+            },
+           diagnostics = {
+                -- Get the language server to recognize the `vim` global
+                globals = {'vim'}
+            },
+            workspace = {
+                -- Make the server aware of Neovim runtime files
+                library = {[vim.fn.expand('$VIMRUNTIME/lua')] = true, [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true}
+            }
+        }
+    },
+    on_attach = on_attach
+}
 -- Enable the following language servers
 require'lspconfig'.gopls.setup(gopls)
 
+require"lspconfig".efm.setup {
+    init_options = {documentFormatting = true},
+    filetypes = {"lua"},
+    settings = {
+        rootMarkers = {".git/"},
+        languages = {
+            lua = {
+                {
+                    formatCommand = "lua-format -i --no-keep-simple-function-one-line --no-break-after-operator --column-limit=150 --break-after-table-lb",
+                    formatStdin = true
+                }
+            }
+        }
+    }
+}

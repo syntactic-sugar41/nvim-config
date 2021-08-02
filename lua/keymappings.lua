@@ -9,4 +9,5 @@ utils.map('n', '<C-K>', '<C-W><C-K>')
 
 utils.map('i', 'jj', '<ESC>')
 utils.map('i', 'JJ', '<ESC>')
-utils.map('n', '<C-n', ':NvimTreeTogle<CR>')
+utils.map('n', '<C-n>', ':NvimTreeTogle<CR>')
+utils.map('n', '<C-t>', ':TZAtaraxis<CR>')
